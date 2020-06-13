@@ -5,13 +5,7 @@ uniform sampler2D tex0;
 
 uniform sampler2D fb0;
 
-
-
-
-
-
 uniform float fb1_mix;
-
 uniform float fb0_xdisplace;
 uniform float fb0_ydisplace;
 
@@ -72,6 +66,8 @@ vec3 hsb2rgb(in vec3 c)
 void main()
 {
 	//important to note that texCoordVarying here seems to be automatically scaled between 0 and 1
+	//no matter what the actual texel size of the texture is which makes some things easier
+	//and some things more complicated
 	
 	
 	//i'm definining a dummy variable that we can put just
@@ -149,10 +145,10 @@ void main()
 	//keep track of all of that
 	vec2 fb0_coord=vec2(texCoordVarying.x,texCoordVarying.y);
 	
-    //lets displace the x and y by the amount that we sent in from
-    //the c++ code via the uniform variables fb0_xdisplace and
-    //fb0_ydisplace
-    fb0_coord=vec2(fb0_coord.x+fb0_xdisplace,fb0_coord.y+fb0_ydisplace);
+    	//lets displace the x and y by the amount that we sent in from
+   	 //the c++ code via the uniform variables fb0_xdisplace and
+   	 //fb0_ydisplace
+   	 fb0_coord=vec2(fb0_coord.x+fb0_xdisplace,fb0_coord.y+fb0_ydisplace);
 	
 	//then lets get the color data out of the fb0 texture
 	vec4 fb0_color = texture2D(fb0, fb0_coord);
@@ -183,7 +179,18 @@ void main()
 	{
 		color=fb0_color;
 	}
+	//something worth noting is that it is good to avoid if statements in shaders because of something called 'branching'
+	//branching happens when your code compiles, if you have an 'if' statement then essentially your code 'branches' at that 
+	//point and two versions of the code get compiled, one for if the 'if' statement returns TRUE and 1 if the 'if' statement
+	//returns FALSE.  this happens in all code when it compiles, the difference in shaders tho is that branching on the c++
+	//side of things means two versions of the code are compiled for each Frame so at 30fps that is fairly negilible 
+	//when you are branching on your shader that means two versions are compiled for each pixel per frame so that can 
+	//get to be an absurdly large number when working with more complex logic situations
 	
+	//there are techinques to get around branching logic situations where you define a uniform vecXi for X number of cases and where
+	//each integer component of the vector is either a 1 or 0 and then you can handle the logic in a more 'analog' manner as a 
+	//linear function of pixel (x y) or pixel (rgba) values.  i'll try and get a couple of examples of this up for when i 
+	//properly set up a class for this subject!
 	
 	
 	
