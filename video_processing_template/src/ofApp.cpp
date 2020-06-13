@@ -50,11 +50,11 @@ void ofApp::setup() {
 	//frame rates
 	ofSetFrameRate(30);
     
-    //this makes the background black
-    ofBackground(0);
+    	//this makes the background black
+    	ofBackground(0);
    
 	//run this to hide the mouse cursor on the screen
-    ofHideCursor();
+   	 ofHideCursor();
 	
 		
 	//so we are drawing a screen size of 720 by 480
@@ -142,7 +142,7 @@ void ofApp::draw() {
 
 		ofxMidiMessage &message = midiMessages[i];
 
-		ofSetColor(127);
+		
 		if(message.status < MIDI_SYSEX) {
 			//text << "chan: " << message.channel;
             if(message.status == MIDI_CONTROL_CHANGE) {
@@ -151,7 +151,7 @@ void ofApp::draw() {
                 //midi control change values default range
                 //from 0 to 127
                 //here you can see two ways to normalize them
-                //c1 we will remap to go from 0 to 1
+                //c1 we will remap to go from 0 to 1 for unipolar controls
                 if(message.control==16){
 					
 					//c1=(message.value-63.0)/63.0;
@@ -179,17 +179,6 @@ void ofApp::draw() {
 	//end midi biz
 	
 	
-	//control attenuation section
-
-	
-	
-	
-	//ok so here is the plan.  try out 1 framebuffer and test out how far back
-//in time we can go.  the mix will have the following controls
-//hsb for framebuffer 0 and 1
-//positions on framebuffer0 ionly 
-//some kind of chaotic hue mixing for fb0
-//lumakeying on fb0 only
     
 
     
@@ -213,31 +202,31 @@ void ofApp::draw() {
 	//so basically all we do are doing on the 
 	//c++ side is binding textures and sending some
 	//variables over
-    shader_mixer.begin();
+  	shader_mixer.begin();
 
 	//calling .draw() on anything within a texture
 	//binds that texture to the gpu
 	//the first one you draw is automatically given the
 	//name tex0 over on the shader side
-	cam1.draw(0,0);
+        cam1.draw(0,0);
    
-    //but if we want to do camera input and do feedback on it
-    //we need to also send the previous frame over to the 
-    //shaders as a texture, this is the format for doing so
-    shader_mixer.setUniformTexture("fb0", framebuffer1.getTexture(),1);
+        //but if we want to do camera input and do feedback on it
+        //we need to also send the previous frame over to the 
+        //shaders as a texture, this is the format for doing so
+        shader_mixer.setUniformTexture("fb0", framebuffer1.getTexture(),1);
 
 
     
-    //if we want to have input from our midi devices or
-    //from our keyboard we need to send these variables over
-    //as well.  setUniform1f is how we send over single float
-    //numbers.  we can also call setUniform1i to send over integers
-    //or setUniform2f to send over a vector with 2 components
-    //and so on and so on
-    shader_mixer.setUniform1f("fb0_xdisplace",sx+.01*c1);
-    shader_mixer.setUniform1f("fb0_ydisplace",dc+.01*c2);
+    	//if we want to have input from our midi devices or
+    	//from our keyboard we need to send these variables over
+    	//as well.  setUniform1f is how we send over single float
+    	//numbers.  we can also call setUniform1i to send over integers
+    	//or setUniform2f to send over a vector with 2 components
+    	//and so on and so on
+    	shader_mixer.setUniform1f("fb0_xdisplace",sx+.01*c1);
+    	shader_mixer.setUniform1f("fb0_ydisplace",dc+.01*c2);
   
-    shader_mixer.end();
+        shader_mixer.end();
 	framebuffer0.end();
 	
 	
@@ -255,21 +244,16 @@ void ofApp::draw() {
 	//we draw our output screen to an extra framebuffer object
 	//and then pass that back into our shader to process it
 	framebuffer1.begin(); 
-    ofPushMatrix();
-	
-    framebuffer0.draw(0,0);
-	
-	ofPopMatrix();
-	
-    framebuffer1.end();
+   	framebuffer0.draw(0,0);
+    	framebuffer1.end();
 
 	
-//i use this block of code to print out like useful information for debugging various things and/or just to keep the 
-//framerate displayed to make sure i'm not losing any frames while testing out new features.  uncomment the ofDrawBitmap etc etc
-//to print the stuff out on screen
-   ofSetColor(255);
-   string msg="fps="+ofToString(ofGetFrameRate(),2);
-  // ofDrawBitmapString(msg,10,10);
+	//i use this block of code to print out like useful information for debugging various things and/or just to keep the 
+	//framerate displayed to make sure i'm not losing any frames while testing out new features.  uncomment the ofDrawBitmap etc etc
+	//to print the stuff out on screen
+   	ofSetColor(255);
+   	string msg="fps="+ofToString(ofGetFrameRate(),2);
+  	// ofDrawBitmapString(msg,10,10);
 }
 
 //--------------------------------------------------------------
